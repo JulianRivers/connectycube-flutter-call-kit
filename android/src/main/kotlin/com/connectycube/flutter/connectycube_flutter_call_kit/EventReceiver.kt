@@ -31,7 +31,8 @@ class EventReceiver : BroadcastReceiver() {
                 val callOpponents = extras?.getIntegerArrayList(EXTRA_CALL_OPPONENTS)
                 val callPhoto = extras?.getString(EXTRA_CALL_PHOTO)
                 val userInfo = extras?.getString(EXTRA_CALL_USER_INFO)
-                Log.i(TAG, "NotificationReceiver onReceive Call REJECT, callId: $callId")
+                val token = extras?.getString(EXTRA_PUSH_TOKEN)
+
 
                 val broadcastIntent = Intent(ACTION_CALL_REJECT)
                 val bundle = Bundle()

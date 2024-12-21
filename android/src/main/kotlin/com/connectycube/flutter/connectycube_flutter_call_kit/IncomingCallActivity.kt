@@ -51,6 +51,7 @@ class IncomingCallActivity : Activity() {
     private var callOpponents: ArrayList<Int>? = ArrayList()
     private var callPhoto: String? = null
     private var callUserInfo: String? = null
+    private var token: String? = null
 
 
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
@@ -157,6 +158,7 @@ class IncomingCallActivity : Activity() {
         callOpponents = intent.getIntegerArrayListExtra(EXTRA_CALL_OPPONENTS)
         callPhoto = intent.getStringExtra(EXTRA_CALL_PHOTO)
         callUserInfo = intent.getStringExtra(EXTRA_CALL_USER_INFO)
+        token = intent.getStringExtra(EXTRA_PUSH_TOKEN)
     }
 
     private fun initUi() {
@@ -205,6 +207,38 @@ class IncomingCallActivity : Activity() {
 
     // calls from layout file
     fun onEndCall(view: View?) {
+        Log.d("onEndCall", "Prueba2")
+        Log.d("onEndCall", "callId: " + callId)
+        Log.d("onEndCall", "callType: " + callType)
+        Log.d("onEndCall", "callInitiatorId: " + callInitiatorId)
+        Log.d("onEndCall", "callInitiatorName: " + callInitiatorName)
+        Log.d("onEndCall", "callOpponents " + callOpponents)
+        Log.d("onEndCall", "callUserInfo " + callUserInfo)
+        val data = callId?.let { getCallData(applicationContext, it) }
+        val token = data?.get("token") as String
+        val platform = data?.get("platform") as String
+        val recipientId = callInitiatorId as Int
+
+        callId?.let { colgarHttp(sessionID = it, recipientId = recipientId, platform = platform, token = token) }
+
+        try {
+            val bundle = Bundle()
+            bundle.putString(EXTRA_CALL_ID, callId)
+            bundle.putInt(EXTRA_CALL_TYPE, callType)
+            bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId)
+            bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
+            bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+            bundle.putString(EXTRA_CALL_PHOTO, callPhoto)
+            bundle.putString(EXTRA_CALL_USER_INFO, callUserInfo)
+
+            val endCallIntent = Intent(this, EventReceiver::class.java)
+            endCallIntent.action = ACTION_CALL_REJECT
+            endCallIntent.putExtras(bundle)
+            applicationContext.sendBroadcast(endCallIntent)
+        } catch (e: Exception) {
+            Log.d("onEndCall", e.toString())
+        }
+        /*
         val bundle = Bundle()
         bundle.putString(EXTRA_CALL_ID, callId)
         bundle.putInt(EXTRA_CALL_TYPE, callType)
@@ -218,6 +252,7 @@ class IncomingCallActivity : Activity() {
         endCallIntent.action = ACTION_CALL_REJECT
         endCallIntent.putExtras(bundle)
         applicationContext.sendBroadcast(endCallIntent)
+         */
     }
 
     // calls from layout file
