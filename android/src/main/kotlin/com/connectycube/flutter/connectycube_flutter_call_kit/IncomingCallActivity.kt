@@ -207,7 +207,7 @@ class IncomingCallActivity : Activity() {
 
     // calls from layout file
     fun onEndCall(view: View?) {
-        Log.d("onEndCall", "Prueba2")
+        Log.d("onEndCall", "Prueba3")
         Log.d("onEndCall", "callId: " + callId)
         Log.d("onEndCall", "callType: " + callType)
         Log.d("onEndCall", "callInitiatorId: " + callInitiatorId)
@@ -215,9 +215,10 @@ class IncomingCallActivity : Activity() {
         Log.d("onEndCall", "callOpponents " + callOpponents)
         Log.d("onEndCall", "callUserInfo " + callUserInfo)
         val data = callId?.let { getCallData(applicationContext, it) }
-        val token = data?.get("token") as String
+        val token = data?.get("oponent_token") as String
         val platform = data?.get("platform") as String
         val recipientId = callInitiatorId as Int
+
 
         callId?.let { colgarHttp(sessionID = it, recipientId = recipientId, platform = platform, token = token) }
 
