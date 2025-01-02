@@ -108,6 +108,8 @@ class CallKitController : NSObject {
         update.supportsHolding = false
         update.supportsDTMF = false
         
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        print("[CallKitController][reportIncomingCall] Se ejecuta después de 3 segundos")
         if (self.currentCallData["session_id"] == nil || self.currentCallData["session_id"] as! String != uuid) {
             print("[CallKitController][reportIncomingCall] report new call: \(uuid)")
             
@@ -136,6 +138,7 @@ class CallKitController : NSObject {
             provider.reportCall(with: UUID(uuidString: uuid)!, updated: update)
             
             completion?(nil)
+        }
         }
     }
     
